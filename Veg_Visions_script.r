@@ -59,16 +59,16 @@ str(dat2)
 dat%>% select(vv_vv_score)
 #changing weediness scores
 dat2 <- dat2 %>% mutate(weediness = ifelse(vv_F_weediness_score == 1, 4, ifelse(vv_F_weediness_score == 0, 5, ifelse(vv_F_weediness_score == 2, 3, ifelse(vv_F_weediness_score == 3, 2, ifelse(vv_F_weediness_score == 5, 0, ifelse(vv_F_weediness_score == 4, 1,0)))))))
-
-scores2 <- dat3 %>%
-  dplyr::select(CATCHMENT, vv_vv_score) %>%
-  filter(vv_vv_score  == "0"|vv_vv_score == "1")
   
 MW_subcatchProj <- st_transform(MW_subcatch,  crs = st_crs(dat2))
 #Spatial joing of the MW subcatchment data
 MW_subcatchProj2 <- st_make_valid(MW_subcatchProj)
 st_is_valid(MW_subcatchProj2)
 dat3 <- st_join(dat2, MW_subcatchProj2, left = FALSE)
+
+scores2 <- dat3 %>%
+  dplyr::select(CATCHMENT, vv_vv_score) %>%
+  filter(vv_vv_score  == "0"|vv_vv_score == "1")
 
 anal_dat <- dat3[ c(2, 38:47, 56, 60) ]
 sapply(anal_dat, mode)
@@ -277,7 +277,7 @@ dat <- vv_map %>%
 skim(vv_map)
 dat2<- dat %>% drop_na(vv_A_structure_score)
 str(vv_map)
-dat%>% dplyr::select(vv_vv_scor)
+dat%>% dplyr::select(vv_vv_score)
 #dat2 <- dat2 %>% mutate(weediness = ifelse(vv_F_weediness_score == 1, 4, ifelse(vv_F_weediness_score == 0, 5, ifelse(vv_F_weediness_score == 2, 3, ifelse(vv_F_weediness_score == 3, 2, ifelse(vv_F_weediness_score == 5, 0, ifelse(vv_F_weediness_score == 4, 1,0)))))))
 
 plot(dat2, axes = TRUE)
@@ -311,7 +311,7 @@ Fig0 <- ggplot(data = dat2) +
   geom_sf(data = waterways, fill = "NA", colour = "blue", size = 0.4) +
   geom_sf(data = MW_bound, fill = "NA", color = "black", size = 1) +
   #geom_sf(data = vv_expertelic, fill = "NA", color = "red") +
-  geom_sf(aes(color = vv_vv_scor), size = 2.5) +
+  geom_sf(aes(color = vv_vv_score), size = 2.5) +
   scale_color_viridis(option = "A", direction = -1,limits = c(0,5), 
                       labels=c("0 = Absent", "1 = Very Low", "2 = Low","3 = Medium","4 = High", "5 = Very High")) +
   geom_sf_text(data = MW_bound, aes(label = CATCHMENT), colour = "black",
